@@ -1,5 +1,5 @@
 # Importar las librerías necesarias
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import Text, Optional
 from datetime import datetime
@@ -38,3 +38,12 @@ def save_post(post: Post):
     post.id = str(uuid())  # Asignar un id único a la publicación
     posts.append(post.dict())  # Convertir la publicación a un diccionario y añadirla a la lista de publicaciones
     return "recibido"
+
+# Endpoint GET que devuelve una publicación específica según su id
+@app.get('/posts/{post_id}')
+def get_post(post_id: str):
+    for post in posts:  # Recorrer la lista de publicaciones
+        if post['id'] == post_id:  # Si se encuentra una publicación con el id especificado
+          return post  # Devolver la publicación
+    raise HTTPException(status_code=400, detail="POST not found")  # Si no se encuentra la publicación, lanzar una excepción HTTP
+

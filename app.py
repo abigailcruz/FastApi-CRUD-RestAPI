@@ -37,7 +37,7 @@ def get_posts():
 def save_post(post: Post):
     post.id = str(uuid())  # Asignar un id único a la publicación
     posts.append(post.dict())  # Convertir la publicación a un diccionario y añadirla a la lista de publicaciones
-    return "recibido"
+    return posts[-1]  # Devolver la última publicación añadida
 
 # Endpoint GET que devuelve una publicación específica según su id
 @app.get('/posts/{post_id}')
@@ -47,3 +47,11 @@ def get_post(post_id: str):
           return post  # Devolver la publicación
     raise HTTPException(status_code=400, detail="POST not found")  # Si no se encuentra la publicación, lanzar una excepción HTTP
 
+# Endpoint DELETE que elimina una publicación específica según su id
+@app.delete('/posts/{post_id}')
+def delete_post(post_id: str):
+    for index, post in enumerate(posts):  # Recorrer la lista de publicaciones
+        if post['id'] == post_id:  # Si se encuentra una publicación con el id especificado
+            posts.pop(index)  # Eliminar la publicación de la lista
+            return {"message": "Post has been deleted succesfully"}  # Devolver un mensaje de confirmación
+    raise HTTPException(status_code=400, detail="Post Not Found")  # Si no se encuentra la publicación, lanzar una excepción HTTP

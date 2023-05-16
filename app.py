@@ -55,3 +55,15 @@ def delete_post(post_id: str):
             posts.pop(index)  # Eliminar la publicación de la lista
             return {"message": "Post has been deleted succesfully"}  # Devolver un mensaje de confirmación
     raise HTTPException(status_code=400, detail="Post Not Found")  # Si no se encuentra la publicación, lanzar una excepción HTTP
+
+# Endpoint PUT que actualiza una publicación específica según su id
+@app.put("/posts/{post_id}")
+def update_post(post_id: str, updatedPost: Post):
+    for index, post in enumerate(posts):  # Recorrer la lista de publicaciones
+        if post['id'] == post_id:  # Si se encuentra una publicación con el id especificado
+            # Actualizar los campos de la publicación con los valores proporcionados en la solicitud
+            posts[index]["title"] =updatedPost.title
+            posts[index]["content"] = updatedPost.content
+            posts[index]["author"] = updatedPost.author
+            return {"message": "Post has been updated succesfully"}  # Devolver un mensaje de confirmación
+    raise HTTPException(status_code=400, detail="Post Not Found")  # Si no se encuentra la publicación, lanzar una excepción HTTP
